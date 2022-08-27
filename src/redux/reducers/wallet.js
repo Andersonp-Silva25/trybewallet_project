@@ -1,4 +1,4 @@
-import { ALTERAR } from '../actions';
+import { GET_CURRENCE_SUCCESS } from '../actions';
 
 const initialState = {
   currencies: [], // array de string
@@ -9,8 +9,11 @@ const initialState = {
 
 function walletReducer(state = initialState, action) {
   switch (action.type) {
-  case ALTERAR:
-    return state;
+  case GET_CURRENCE_SUCCESS:
+    return {
+      ...state,
+      currencies: Object.keys(action.value).filter((currence) => currence !== 'USDT'),
+    };
   default:
     return state;
   }
