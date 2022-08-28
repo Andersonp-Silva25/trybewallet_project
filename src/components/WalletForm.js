@@ -110,7 +110,7 @@ class WalletForm extends Component {
           </label>
           {' '}
           <label htmlFor="description">
-            Descrição:
+            Descrição
             {' '}
             <input
               type="text"
