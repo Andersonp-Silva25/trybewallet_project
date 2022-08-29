@@ -13,10 +13,10 @@ class WalletForm extends Component {
     this.state = {
       id: 0,
       value: '',
+      description: '',
       currency: 'USD',
       method: 'Dinheiro',
       tag: 'Alimentação',
-      description: '',
     };
   }
 
@@ -31,9 +31,9 @@ class WalletForm extends Component {
 
   submitExpense = (event) => {
     event.preventDefault();
+    const { id, value, description, currency, method, tag } = this.state;
     const { dispatch } = this.props;
-    const { id } = this.state;
-    dispatch(addExpenseThunk(this.state));
+    dispatch(addExpenseThunk({ id, value, currency, method, tag, description }));
     this.setState({
       id: id + 1,
       value: '',
@@ -68,11 +68,11 @@ class WalletForm extends Component {
               id="currency"
               name="currency"
               data-testid="currency-input"
-              onClick={ this.handleChange }
+              onChange={ this.handleChange }
               defaultValue={ currency }
             >
-              {currencies.map((newOption, index) => (
-                <option key={ index }>{newOption}</option>
+              {currencies.map((newOption) => (
+                <option key={ newOption } value={ newOption }>{newOption}</option>
               ))}
             </select>
           </label>
@@ -84,11 +84,11 @@ class WalletForm extends Component {
               id="method"
               name="method"
               data-testid="method-input"
-              onClick={ this.handleChange }
+              onChange={ this.handleChange }
               defaultValue={ method }
             >
-              {paymentMethodsOptions.map((newOption, index) => (
-                <option key={ index }>{newOption}</option>
+              {paymentMethodsOptions.map((newOption) => (
+                <option key={ newOption } value={ newOption }>{newOption}</option>
               ))}
             </select>
           </label>
@@ -100,11 +100,11 @@ class WalletForm extends Component {
               id="tag"
               name="tag"
               data-testid="tag-input"
-              onClick={ this.handleChange }
+              onChange={ this.handleChange }
               defaultValue={ tag }
             >
-              {tagsOptions.map((newOption, index) => (
-                <option key={ index }>{newOption}</option>
+              {tagsOptions.map((newOption) => (
+                <option key={ newOption } value={ newOption }>{newOption}</option>
               ))}
             </select>
           </label>
