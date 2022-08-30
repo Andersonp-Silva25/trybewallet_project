@@ -1,27 +1,40 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
+import { deleteExpense } from '../redux/actions';
 
 class Table extends Component {
+  deleteButton = ({ target: { value } }) => {
+    const { dispatch, expenses } = this.props;
+    const deleteFilter = expenses.filter((expense) => expense.id !== Number(value));
+    const valueFilter = expenses.find((expense) => expense.id === Number(value));
+    const convertedValue = parseFloat(
+      valueFilter.exchangeRates[valueFilter.currency].ask * valueFilter.value,
+    ).toFixed(2);
+    dispatch(deleteExpense(deleteFilter, convertedValue));
+  };
+
   render() {
     const { expenses } = this.props;
-    console.log(expenses);
+
     return (
       <div>
         <table>
-          <th>Descrição</th>
-          <th>Tag</th>
-          <th>Método de pagamento</th>
-          <th>Valor</th>
-          <th>Moeda</th>
-          <th>Câmbio utilizado</th>
-          <th>Valor convertido</th>
-          <th>Moeda de conversão</th>
-          <th>Editar/Excluir</th>
+          <thead>
+            <th>Descrição</th>
+            <th>Tag</th>
+            <th>Método de pagamento</th>
+            <th>Valor</th>
+            <th>Moeda</th>
+            <th>Câmbio utilizado</th>
+            <th>Valor convertido</th>
+            <th>Moeda de conversão</th>
+            <th>Editar/Excluir</th>
+          </thead>
 
-          {expenses.map((expense) => (
-            <tbody key={ expense.id }>
-              <tr>
+          <tbody>
+            {expenses.map((expense) => (
+              <tr key={ expense.id }>
                 <td>{expense.description}</td>
                 <td>{expense.tag}</td>
                 <td>{expense.method}</td>
@@ -41,9 +54,19 @@ class Table extends Component {
                   }
                 </td>
                 <td>Real</td>
+                <td>
+                  <button
+                    type="button"
+                    data-testid="delete-btn"
+                    onClick={ this.deleteButton }
+                    value={ expense.id }
+                  >
+                    Delete
+                  </button>
+                </td>
               </tr>
-            </tbody>
-          ))}
+            ))}
+          </tbody>
         </table>
       </div>
     );
@@ -55,6 +78,7 @@ const mapStateToProps = (state) => ({
 });
 
 Table.propTypes = {
+  dispatch: PropTypes.func.isRequired,
   expenses: PropTypes.arrayOf(
     PropTypes.shape({}),
   ).isRequired,

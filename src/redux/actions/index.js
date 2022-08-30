@@ -3,6 +3,7 @@ import getCurrence from '../../services';
 export const ADD_LOGIN = 'ADD_LOGIN';
 export const GET_CURRENCE_SUCCESS = 'GET_CURRENCE_SUCCESS';
 export const ADD_EXPENSE = 'ADD_EXPENSE';
+export const DELETE_EXPENSE = 'DELETE_EXPENSE';
 
 export const addLogin = (value) => ({
   type: ADD_LOGIN,
@@ -32,3 +33,9 @@ export const addExpenseThunk = (value) => async (dispatch) => {
   };
   dispatch(addExpense(newObj));
 };
+
+export const deleteExpense = (value, convertedValue) => ({
+  type: DELETE_EXPENSE,
+  value,
+  convertedValue,
+});

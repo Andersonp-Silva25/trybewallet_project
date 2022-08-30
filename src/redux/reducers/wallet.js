@@ -1,4 +1,4 @@
-import { GET_CURRENCE_SUCCESS, ADD_EXPENSE } from '../actions';
+import { GET_CURRENCE_SUCCESS, ADD_EXPENSE, DELETE_EXPENSE } from '../actions';
 
 const initialState = {
   currencies: [], // array de string
@@ -23,6 +23,12 @@ function walletReducer(state = initialState, action) {
         .find((checkCurrency) => (
           checkCurrency.code === action.value.currency && checkCurrency.codein === 'BRL'
         )).ask) * action.value.value),
+    };
+  case DELETE_EXPENSE:
+    return {
+      ...state,
+      expenses: action.value,
+      total: state.total - action.convertedValue,
     };
   default:
     return state;
