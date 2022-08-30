@@ -1,4 +1,10 @@
-import { GET_CURRENCE_SUCCESS, ADD_EXPENSE, DELETE_EXPENSE } from '../actions';
+import {
+  GET_CURRENCE_SUCCESS,
+  ADD_EXPENSE,
+  DELETE_EXPENSE,
+  GET_EDIT_EXPENSE,
+  EDIT_EXPENSE,
+} from '../actions';
 
 const initialState = {
   currencies: [], // array de string
@@ -6,6 +12,8 @@ const initialState = {
   editor: false, // valor booleano que indica de uma despesa está sendo editada
   idToEdit: 0, // valor numérico que armazena o id da despesa que esta sendo editada
   total: 0,
+  isEdit: false,
+  expenseEdit: {},
 };
 
 function walletReducer(state = initialState, action) {
@@ -29,6 +37,19 @@ function walletReducer(state = initialState, action) {
       ...state,
       expenses: action.value,
       total: state.total - action.convertedValue,
+    };
+  case GET_EDIT_EXPENSE:
+    return {
+      ...state,
+      expenseEdit: action.value,
+      isEdit: true,
+    };
+  case EDIT_EXPENSE:
+    return {
+      ...state,
+      expenses: action.value,
+      total: (state.total - action.changeValue.oldValue) + action.changeValue.newValue,
+      isEdit: false,
     };
   default:
     return state;
