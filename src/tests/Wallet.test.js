@@ -13,6 +13,8 @@ beforeEach(() => {
 
 afterEach(() => jest.clearAllMocks());
 
+const VALUE_INPUT = 'value-input';
+
 describe('Testando a pagina Wallet', () => {
   test('Verifica se a rota está correta', () => {
     const { history } = renderWithRouterAndRedux(<Wallet />, { initialEntries: ['/carteira'] });
@@ -56,7 +58,7 @@ describe('Testando a pagina Wallet', () => {
   test('Verifica se o total esta sendo atualizado corretamente no Header', async () => {
     renderWithRouterAndRedux(<Wallet />);
 
-    const value = screen.getByTestId('value-input');
+    const value = screen.getByTestId(VALUE_INPUT);
     const currency = screen.getByTestId('currency-input');
     const method = screen.getByTestId('method-input');
     const tag = screen.getByTestId('tag-input');
@@ -74,6 +76,79 @@ describe('Testando a pagina Wallet', () => {
 
     await waitFor(() => {
       expect(totalValue.innerHTML).toBe('23.77');
+    });
+  });
+
+  test('Verifica se a despesa está sendo adicionada corretamente', async () => {
+    renderWithRouterAndRedux(<Wallet />);
+
+    const value = screen.getByTestId(VALUE_INPUT);
+    const currency = screen.getByTestId('currency-input');
+    const method = screen.getByTestId('method-input');
+    const tag = screen.getByTestId('tag-input');
+    const description = screen.getByTestId('description-input');
+    const button = screen.getByRole('button', { name: /adicionar despesa/i });
+
+    userEvent.type(value, '5');
+    userEvent.type(currency, 'USD');
+    userEvent.type(method, 'Dinheiro');
+    userEvent.type(tag, 'Lazer');
+    userEvent.type(description, 'Mercado');
+    userEvent.click(button);
+
+    await waitFor(() => {
+      const resultDescription = screen.getByText('Mercado');
+      const resultTag = screen.getByText('Lazer');
+      const resultMethod = screen.getByText('Cartão de crédito');
+      const resultValue = screen.getByText('5.00');
+      const resultCurrency = screen.getByText('Dólar Americano/Real Brasileiro');
+      const resultCurrentValue = screen.getByText('4.75');
+      const resultConvertedValue = screen.getAllByText('23.77');
+
+      expect(resultDescription).toBeInTheDocument();
+      expect(resultTag).toBeInTheDocument();
+      expect(resultMethod).toBeInTheDocument();
+      expect(resultValue).toBeInTheDocument();
+      expect(resultCurrency).toBeInTheDocument();
+      expect(resultCurrentValue).toBeInTheDocument();
+      expect(resultConvertedValue[1]).toBeInTheDocument();
+    });
+  });
+
+  test('Verifica se a despesa está sendo removida corretamente', async () => {
+    renderWithRouterAndRedux(<Wallet />);
+
+    const value = screen.getByTestId(VALUE_INPUT);
+    const button = screen.getByRole('button', { name: /adicionar despesa/i });
+    userEvent.type(value, '5');
+    userEvent.click(button);
+
+    await waitFor(() => {
+      const deleteBtn = screen.getByTestId('delete-btn');
+      userEvent.click(deleteBtn);
+      expect(deleteBtn).not.toBeInTheDocument();
+    });
+  });
+
+  test('Verifica se ao clicar em editar é possivel alterar os valores da despesa', async () => {
+    renderWithRouterAndRedux(<Wallet />);
+
+    const value = screen.getByTestId(VALUE_INPUT);
+    const button = screen.getByRole('button', { name: /adicionar despesa/i });
+    userEvent.type(value, '5');
+    userEvent.click(button);
+
+    await waitFor(() => {
+      const editBtn = screen.getByTestId('edit-btn');
+      userEvent.click(editBtn);
+
+      const editExpenseBtn = screen.getByRole('button', { name: /editar despesa/i });
+      expect(editExpenseBtn).toBeInTheDocument();
+
+      userEvent.type(value, '10');
+      userEvent.click(editExpenseBtn);
+
+      expect(editExpenseBtn).not.toBeInTheDocument();
     });
   });
 });
