@@ -43,7 +43,7 @@ class Login extends React.Component {
 
     return (
       <div>
-        Login
+        <h2>Login</h2>
         <form onSubmit={ this.loginApproved }>
           <input
             type="email"
